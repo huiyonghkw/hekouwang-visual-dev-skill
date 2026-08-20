@@ -12,8 +12,4 @@ if [ ! -f "$DOCTOR_DIR/check.py" ]; then
 fi
 python3 "$DOCTOR_DIR/check.py" "$ROOT"
 
-if [ "${HEKOUWANG_VISUAL_STACK_GATE:-0}" = "1" ]; then
-  python3 "$ROOT/scripts/check_stack.py" --isolated-install
-else
-  echo "INFO: 初始发布仅运行 Skill 自检；视觉栈修复完成后启用 HEKOUWANG_VISUAL_STACK_GATE=1。"
-fi
+python3 "$ROOT/scripts/check_stack.py" --isolated-install

@@ -18,12 +18,15 @@ class StackFixture:
         (self.core / "assets/themes/legacy").mkdir(parents=True)
         themes = {name: {"label": name} for name in sorted(EXPECTED_THEMES)}
         registry = {
+            "schema_version": 1,
+            "version": "1.0.0",
             "default": "v2-mibai",
             "aliases": {"t2-keji-bai": "legacy:t2-keji-bai"},
             "themes": themes,
         }
         (self.core / "assets/theme_registry.json").write_text(
             json.dumps(registry), encoding="utf-8")
+        (self.core / "VERSION").write_text("1.0.0\n", encoding="utf-8")
         for name in themes:
             (self.core / f"assets/themes/{name}.css").write_text(":root{}", encoding="utf-8")
         (self.core / "assets/themes/legacy/t2-keji-bai.css").write_text(":root{}", encoding="utf-8")
@@ -32,19 +35,46 @@ class StackFixture:
 
         (self.content / "contracts").mkdir()
         (self.content / "contracts/content-contract.schema.json").write_text(
-            json.dumps({"type": "object", "required": ["episode", "pages"],
-                        "properties": {"episode": {}, "pages": {}}}), encoding="utf-8")
+            json.dumps({
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["version", "episode", "channel", "research_package_ref", "article_master_ref", "pages"],
+                "properties": {
+                    "version": {"const": "2"},
+                    "episode": {}, "channel": {}, "research_package_ref": {}, "article_master_ref": {},
+                    "pages": {"items": {"additionalProperties": False, "properties": {"id": {}, "role": {}, "core_message": {}}}},
+                },
+            }), encoding="utf-8")
+        (self.content / "assets").mkdir()
+        (self.content / "assets/validate_contract.py").write_text("# validator", encoding="utf-8")
         (self.content / "SKILL.md").write_text(
             "叙事真源；文章母版网页；输出 content-contract.json。", encoding="utf-8")
 
         (self.xhs / "contracts").mkdir()
         (self.xhs / "contracts/visual-plan.schema.json").write_text(
-            json.dumps({"type": "object",
-                        "required": ["theme", "content_contract_ref", "pages"],
-                        "properties": {"theme": {}, "content_contract_ref": {}, "pages": {}}}),
+            json.dumps({
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["version", "episode", "channel", "theme", "content_contract_ref", "pages"],
+                "properties": {
+                    "version": {"const": "1"}, "episode": {}, "channel": {},
+                    "theme": {}, "content_contract_ref": {},
+                    "pages": {"items": {
+                        "additionalProperties": False,
+                        "required": ["id", "content_page_ref", "visual_role", "composition_intent", "fit_strategy"],
+                        "properties": {
+                            "id": {}, "content_page_ref": {}, "visual_role": {},
+                            "composition_intent": {}, "fit_strategy": {},
+                        },
+                    }},
+                },
+            }),
             encoding="utf-8")
+        (self.xhs / "scripts").mkdir()
+        (self.xhs / "scripts/validate_visual_plan.py").write_text("# validator", encoding="utf-8")
+        (self.xhs / "scripts/validate_build.py").write_text("# gate", encoding="utf-8")
         (self.xhs / "SKILL.md").write_text(
-            "视觉装配与验收真源；消费内容合同；输出 visual-plan.json。", encoding="utf-8")
+            "视觉装配与验收真源；消费内容合同；输出 visual-plan.json；Visual Core 是可复用运行时。", encoding="utf-8")
 
         (self.research / "SKILL.md").write_text(
             "EP Research 是事实真源，不实现视觉。", encoding="utf-8")
@@ -81,6 +111,23 @@ class CheckStackTest(unittest.TestCase):
             }), encoding="utf-8")
             findings = self.run_fixture(fixture)
             self.assertTrue(any(item.code == "content-contract-owns-theme" for item in findings))
+
+    def test_registry_missing_official_id_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = StackFixture(Path(tmp))
+            path = fixture.core / "assets/theme_registry.json"
+            registry = json.loads(path.read_text(encoding="utf-8"))
+            registry["themes"].pop("v8-naiyou-hei")
+            path.write_text(json.dumps(registry), encoding="utf-8")
+            findings = self.run_fixture(fixture)
+            self.assertTrue(any(item.code == "registry-missing-id" for item in findings))
+
+    def test_ownership_drift_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = StackFixture(Path(tmp))
+            (fixture.xhs / "SKILL.md").write_text("视觉也可以负责事实真源", encoding="utf-8")
+            findings = self.run_fixture(fixture)
+            self.assertTrue(any(item.code.startswith("xhs-owner-") for item in findings))
 
     def test_duplicate_runtime_fails(self):
         with tempfile.TemporaryDirectory() as tmp:

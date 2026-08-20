@@ -76,6 +76,14 @@ def check_registry(core: Path) -> tuple[list[Finding], set[str]]:
     data = read_json(path, findings, "registry-missing")
     if data is None:
         return findings, set()
+    if data.get("schema_version") != 1:
+        findings.append(finding("error", "registry-schema-version", path, "schema_version 必须是 1"))
+    version = data.get("version")
+    if not isinstance(version, str) or not version.strip():
+        findings.append(finding("error", "registry-version", path, "version 必须是非空字符串"))
+    version_file = core / "VERSION"
+    if not version_file.is_file() or version_file.read_text(encoding="utf-8").strip() != version:
+        findings.append(finding("error", "registry-version-drift", version_file, "VERSION 与注册表 version 不一致"))
     themes = data.get("themes")
     if not isinstance(themes, dict):
         findings.append(finding("error", "registry-shape", path, "themes 必须是对象"))
@@ -172,7 +180,7 @@ def check_ownership(core: Path, content: Path, xhs: Path, research: Path) -> lis
     ))
     findings.extend(require_tokens(
         xhs / "SKILL.md",
-        ["视觉装配与验收真源", "visual-plan.json", "内容合同"],
+        ["视觉装配与验收真源", "visual-plan.json", "内容合同", "Visual Core 是可复用运行时"],
         ["事实真源", "选题、事实、文案、合规、来源内容由 hekouwang-content-master-skill 负责"],
         "xhs-owner",
     ))
@@ -188,7 +196,10 @@ def check_ownership(core: Path, content: Path, xhs: Path, research: Path) -> lis
 def check_duplicate_assets(content: Path, xhs: Path) -> list[Finding]:
     findings: list[Finding] = []
     blocked = {
-        content: ["assets/theme_registry.json", "assets/themes", "assets/fonts", "assets/runtime"],
+        content: [
+            "assets/theme_registry.json", "assets/themes", "assets/fonts", "assets/runtime",
+            "assets/components/components.css", "assets/components/variants",
+        ],
         xhs: ["assets/theme_registry.json", "assets/themes", "assets/fonts", "assets/runtime", "assets/components"],
     }
     for root, relatives in blocked.items():
@@ -214,27 +225,70 @@ def check_contract_split(content: Path, xhs: Path) -> list[Finding]:
     if content_schema is not None:
         required = root_required(content_schema)
         properties = content_schema.get("properties", {})
+        expected = {"version", "episode", "channel", "research_package_ref", "article_master_ref", "pages"}
+        if not expected.issubset(required):
+            findings.append(finding(
+                "error", "content-contract-root", content_path,
+                f"内容合同缺少根必填字段：{sorted(expected - required)}",
+            ))
+        version_schema = properties.get("version", {}) if isinstance(properties, dict) else {}
+        if not isinstance(version_schema, dict) or version_schema.get("const") != "2":
+            findings.append(finding("error", "content-contract-version", content_path, "内容合同 version 必须固定为字符串 2"))
         if "theme" in required or (isinstance(properties, dict) and "theme" in properties):
             findings.append(finding(
                 "error", "content-contract-owns-theme", content_path,
                 "内容合同不得定义 theme；主题属于渠道视觉计划",
             ))
-        text = json.dumps(content_schema, ensure_ascii=False)
-        for field in ("visual_increment", "fit_strategy", "composition"):
-            if f'"{field}"' in text:
+        pages = properties.get("pages", {}) if isinstance(properties, dict) else {}
+        items = pages.get("items", {}) if isinstance(pages, dict) else {}
+        page_properties = items.get("properties", {}) if isinstance(items, dict) else {}
+        for field in ("theme", "native_object", "relation", "visual_increment", "fit_strategy", "composition_intent", "asset_refs"):
+            if isinstance(page_properties, dict) and field in page_properties:
                 findings.append(finding(
                     "error", "content-contract-owns-visual", content_path,
                     f"内容合同仍包含视觉字段：{field}",
                 ))
+        if content_schema.get("additionalProperties") is not False or items.get("additionalProperties") is not False:
+            findings.append(finding("error", "content-contract-open-shape", content_path, "内容合同根节点和页面必须拒绝未知字段"))
     visual_path = xhs / "contracts/visual-plan.schema.json"
     visual_schema = read_json(visual_path, findings, "visual-plan-missing")
     if visual_schema is not None:
         required = root_required(visual_schema)
-        if not {"theme", "content_contract_ref", "pages"}.issubset(required):
+        expected = {"version", "episode", "channel", "theme", "content_contract_ref", "pages"}
+        if not expected.issubset(required):
             findings.append(finding(
                 "error", "visual-plan-root", visual_path,
-                "视觉计划根字段必须包含 theme、content_contract_ref、pages",
+                f"视觉计划缺少根必填字段：{sorted(expected - required)}",
             ))
+        properties = visual_schema.get("properties", {})
+        version_schema = properties.get("version", {}) if isinstance(properties, dict) else {}
+        if not isinstance(version_schema, dict) or version_schema.get("const") != "1":
+            findings.append(finding("error", "visual-plan-version", visual_path, "视觉计划 version 必须固定为字符串 1"))
+        pages = properties.get("pages", {}) if isinstance(properties, dict) else {}
+        items = pages.get("items", {}) if isinstance(pages, dict) else {}
+        page_required = root_required(items) if isinstance(items, dict) else set()
+        expected_page = {"id", "content_page_ref", "visual_role", "composition_intent", "fit_strategy"}
+        if not expected_page.issubset(page_required):
+            findings.append(finding(
+                "error", "visual-plan-page", visual_path,
+                f"视觉计划页面缺少必填字段：{sorted(expected_page - page_required)}",
+            ))
+        page_properties = items.get("properties", {}) if isinstance(items, dict) else {}
+        for field in ("title", "copy", "core_message", "locked_fact_ids", "evidence_refs", "source_refs", "non_rewrite", "compliance_notes"):
+            if isinstance(page_properties, dict) and field in page_properties:
+                findings.append(finding(
+                    "error", "visual-plan-owns-content", visual_path,
+                    f"视觉计划仍包含内容字段：{field}",
+                ))
+        if visual_schema.get("additionalProperties") is not False or items.get("additionalProperties") is not False:
+            findings.append(finding("error", "visual-plan-open-shape", visual_path, "视觉计划根节点和页面必须拒绝未知字段"))
+    for path, code in (
+        (content / "assets/validate_contract.py", "content-contract-validator"),
+        (xhs / "scripts/validate_visual_plan.py", "visual-plan-validator"),
+        (xhs / "scripts/validate_build.py", "dual-contract-build-gate"),
+    ):
+        if not path.is_file():
+            findings.append(finding("error", code, path, "合同存在但缺少可执行校验器"))
     return findings
 
 
