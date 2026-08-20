@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+DOCTOR_DIR=${HEKOUWANG_SKILL_DOCTOR_DIR:-"${HOME:-}/.claude/skills/hekouwang-claude-skill-doctor-skill"}
+
+python3 -m unittest discover -s "$ROOT/tests" -p 'test_*.py'
+
+if [ ! -f "$DOCTOR_DIR/check.py" ]; then
+  echo "FAIL: 找不到 Skill Doctor：$DOCTOR_DIR/check.py" >&2
+  exit 1
+fi
+python3 "$DOCTOR_DIR/check.py" "$ROOT"
+
+if [ "${HEKOUWANG_VISUAL_STACK_GATE:-0}" = "1" ]; then
+  python3 "$ROOT/scripts/check_stack.py" --isolated-install
+else
+  echo "INFO: 初始发布仅运行 Skill 自检；视觉栈修复完成后启用 HEKOUWANG_VISUAL_STACK_GATE=1。"
+fi

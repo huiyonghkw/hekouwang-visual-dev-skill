@@ -1,0 +1,6 @@
+interface:
+  display_name: "禾口王视觉内核开发"
+  short_description: "维护禾口王视觉内核、设计令牌、主题注册表与跨渠道回归门"
+  default_prompt: "Use $hekouwang-visual-dev-skill to review and safely update the Hekouwang visual core."
+policy:
+  allow_implicit_invocation: true
