@@ -381,7 +381,7 @@ def parse_args() -> argparse.Namespace:
         "HEKOUWANG_XHS_SKILL_DIR", ".claude/skills/hekouwang-xhs-theme-skill"))
     parser.add_argument("--research", type=Path, default=default_path(
         "HEKOUWANG_RESEARCH_SKILL_DIR",
-        "Dashboard/Github/hekouwang-content-agent/.agents/skills/hekouwang-ep-research-skill"))
+        "Dashboard/Github/hekouwang-content-growth-engine-agent/.agents/skills/hekouwang-ep-research-skill"))
     parser.add_argument("--isolated-install", action="store_true")
     parser.add_argument("--json", action="store_true")
     return parser.parse_args()
