@@ -262,8 +262,20 @@ def check_contract_split(content: Path, xhs: Path) -> list[Finding]:
             ))
         properties = visual_schema.get("properties", {})
         version_schema = properties.get("version", {}) if isinstance(properties, dict) else {}
-        if not isinstance(version_schema, dict) or version_schema.get("const") != "1":
-            findings.append(finding("error", "visual-plan-version", visual_path, "视觉计划 version 必须固定为字符串 1"))
+        supported_versions = set()
+        if isinstance(version_schema, dict):
+            if version_schema.get("const") is not None:
+                supported_versions.add(version_schema.get("const"))
+            enum_versions = version_schema.get("enum", [])
+            if isinstance(enum_versions, list):
+                supported_versions.update(enum_versions)
+        if not {"1", "1.1"}.issubset(supported_versions):
+            findings.append(finding(
+                "error",
+                "visual-plan-version",
+                visual_path,
+                "视觉计划 version 必须兼容字符串 1 和 1.1",
+            ))
         pages = properties.get("pages", {}) if isinstance(properties, dict) else {}
         items = pages.get("items", {}) if isinstance(pages, dict) else {}
         page_required = root_required(items) if isinstance(items, dict) else set()

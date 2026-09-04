@@ -57,7 +57,7 @@ class StackFixture:
                 "additionalProperties": False,
                 "required": ["version", "episode", "channel", "theme", "content_contract_ref", "pages"],
                 "properties": {
-                    "version": {"const": "1"}, "episode": {}, "channel": {},
+                    "version": {"enum": ["1", "1.1"]}, "episode": {}, "channel": {},
                     "theme": {}, "content_contract_ref": {},
                     "pages": {"items": {
                         "additionalProperties": False,
