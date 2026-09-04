@@ -30,7 +30,7 @@ EP Research ──锁定事实──▶ Content Master ──内容合同──�
 hekouwang-visual-dev-skill：维护上面这套边界并执行跨仓回归
 ```
 
-四层职责的完整定义见 [`references/architecture.md`](references/architecture.md)。
+四层职责的完整定义见 [`references/architecture.md`](references/architecture.md)；版本演进与 reference 覆盖见 [`references/version-history-and-coverage.md`](references/version-history-and-coverage.md)。
 
 ## 适用场景
 
