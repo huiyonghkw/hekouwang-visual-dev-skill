@@ -33,7 +33,7 @@ python3 scripts/check_stack.py --isolated-install
 - [ ] Content Master 单测通过。
 - [ ] XHS Theme 单测与主题验证通过。
 - [ ] 主 Harness working-tree、staged 或 CI 模式按任务需要通过。
-- [ ] 新 EP 前向测试没有依赖旧 `~/.claude/skills/hekouwang-visual-core`。
+- [ ] 新 EP 前向测试没有依赖已删除的旧 `~/.claude/skills/hekouwang-visual-core`；只使用 `~/.hekouwang/visual-core`。
 - [ ] 自动检查和人工视觉检查分开记录。
 
 ## 推送
