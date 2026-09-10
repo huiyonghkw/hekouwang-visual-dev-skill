@@ -34,7 +34,7 @@ hekouwang-visual-dev-skill：维护上面这套边界并执行跨仓回归
 
 ## 适用场景
 
-- 新增或修改 V1–V8 主题及黑白两极；
+- 新增或修改 V1–V6 主题及黑白两极；
 - 调整共享 Token、字体合同、基础组件、`fit.js` 或 `shoot.js`；
 - 把 Content Master / XHS Theme 中的重复视觉资产迁移到 Core；
 - 检查 `content-contract.json` 与 `visual-plan.json` 是否重新混在一起；
@@ -93,7 +93,7 @@ python3 scripts/check_stack.py \
 
 检查内容：
 
-1. Visual Core 注册表必须是 16 个规范主题，默认主题和旧别名都能解析；
+1. Visual Core 注册表必须是 12 个规范主题，默认主题和旧别名都能解析；
 2. Content Master / XHS Theme 不得继续保存主题、字体、注册表与截图运行时副本；
 3. EP Research、Content Master、Visual Core、Channel Design 的所有权声明不能互相覆盖；
 4. `content-contract.json` 不含主题与构图决策，`visual-plan.json` 才拥有 `theme`；

@@ -1,6 +1,6 @@
 ---
 name: hekouwang-visual-dev-skill
-description: 维护会勇禾口王共享视觉内核及其跨 Skill 契约。当用户要求新增或调整 V1–V8 主题、设计 Token、字体合同、通道组件、fit/shoot 运行时，或检查 Visual Core、Content Master、XHS Theme 之间的所有权与注册表漂移时使用。不用于制作某一期 EP、撰写内容或直接生成渠道图片。
+description: 维护会勇禾口王共享视觉内核及其跨 Skill 契约。当用户要求新增或调整 V1–V6 主题、设计 Token、字体合同、通道组件、fit/shoot 运行时，或检查 Visual Core、Content Master、XHS Theme 之间的所有权与注册表漂移时使用。不用于制作某一期 EP、撰写内容或直接生成渠道图片。
 allowed-tools:
   - Bash
   - Read
@@ -44,7 +44,7 @@ Visual Core 不决定某期说什么，也不决定某页如何构图。只有�
 - `HEKOUWANG_CONTENT_SKILL_DIR`、`HEKOUWANG_XHS_SKILL_DIR`、`HEKOUWANG_RESEARCH_SKILL_DIR`：集成检查目标。
 - `HEKOUWANG_SKILL_DOCTOR_DIR`：Skill Doctor 目录。
 
-旧路径 `~/.claude/skills/hekouwang-visual-core` 只作迁移兼容，不能继续作为新文档的默认路径。
+旧路径 `~/.claude/skills/hekouwang-visual-core` 已删除；只使用 `~/.hekouwang/visual-core`。
 
 ## 完成门
 

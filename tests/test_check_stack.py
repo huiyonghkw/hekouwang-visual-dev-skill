@@ -117,7 +117,7 @@ class CheckStackTest(unittest.TestCase):
             fixture = StackFixture(Path(tmp))
             path = fixture.core / "assets/theme_registry.json"
             registry = json.loads(path.read_text(encoding="utf-8"))
-            registry["themes"].pop("v8-naiyou-hei")
+            registry["themes"].pop("v6-yancai-hei")
             path.write_text(json.dumps(registry), encoding="utf-8")
             findings = self.run_fixture(fixture)
             self.assertTrue(any(item.code == "registry-missing-id" for item in findings))

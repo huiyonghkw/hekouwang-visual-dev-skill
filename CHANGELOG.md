@@ -1,5 +1,10 @@
 # Changelog
 
+## 未发布 · 2026-09-10 · 退役 V7/V8，矩阵收为 V1–V6
+
+- `EXPECTED_THEMES` 与 Visual Core 1.0.6 对齐为 V1–V6 × 黑白共 12 主题。
+
+
 ## 未发布 · 2026-08-21 · Visual Plan v1.1 跨栈兼容
 
 - 跨仓视觉栈检查同时接受视觉计划 v1 与 v1.1，避免 XHS 质量字段升级后被旧的 schema 常量门误判。

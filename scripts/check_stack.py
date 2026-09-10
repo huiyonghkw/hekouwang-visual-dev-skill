@@ -22,8 +22,6 @@ EXPECTED_THEMES = {
     "v4-boli-bai", "v4-boli-hei",
     "v5-zi-bai", "v5-zi-hei",
     "v6-yancai-bai", "v6-yancai-hei",
-    "v7-qingning-bai", "v7-qingning-hei",
-    "v8-naiyou-bai", "v8-naiyou-hei",
 }
 TEXT_SUFFIXES = {".md", ".py", ".json", ".yaml", ".yml", ".sh", ".css", ".html"}
 PHANTOM_ID = re.compile(r"\bv[1-8]-[a-z0-9-]+-(?:xhs|visual)-spec\b")
