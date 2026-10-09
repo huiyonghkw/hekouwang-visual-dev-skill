@@ -3,7 +3,18 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.check_stack import EXPECTED_THEMES, check_stack
+from scripts.check_stack import (
+    EXPECTED_THEMES,
+    THEME_VARIANT_FAMILY,
+    VARIANT_CHANNELS,
+    check_stack,
+)
+
+
+def variant_of(theme: str) -> str:
+    family = theme.split("-", 1)[0]
+    allowed = THEME_VARIANT_FAMILY[family]
+    return "readdy" if "readdy" in allowed else sorted(allowed)[0]
 
 
 class StackFixture:
@@ -16,7 +27,10 @@ class StackFixture:
             path.mkdir(parents=True)
 
         (self.core / "assets/themes/legacy").mkdir(parents=True)
-        themes = {name: {"label": name} for name in sorted(EXPECTED_THEMES)}
+        themes = {
+            name: {"label": name, "variant": variant_of(name)}
+            for name in sorted(EXPECTED_THEMES)
+        }
         registry = {
             "schema_version": 1,
             "version": "1.0.0",
@@ -30,6 +44,12 @@ class StackFixture:
         for name in themes:
             (self.core / f"assets/themes/{name}.css").write_text(":root{}", encoding="utf-8")
         (self.core / "assets/themes/legacy/t2-keji-bai.css").write_text(":root{}", encoding="utf-8")
+        for channel in VARIANT_CHANNELS:
+            variant_dir = self.core / "assets/components/variants" / channel
+            variant_dir.mkdir(parents=True)
+            for variant in {meta["variant"] for meta in themes.values()}:
+                (variant_dir / f"{variant}.css").write_text(
+                    ":root{}\n.cover-stage-v1{}", encoding="utf-8")
         (self.core / "README.md").write_text(
             "共享视觉核心；不决定某期说什么，也不决定渠道构图。", encoding="utf-8")
 
@@ -144,6 +164,31 @@ class CheckStackTest(unittest.TestCase):
             with (fixture.xhs / "SKILL.md").open("a", encoding="utf-8") as handle:
                 handle.write("\n示例：theme='v*-*'\n")
             self.assertEqual(self.run_fixture(fixture), [])
+
+    def test_theme_variant_family_mismatch_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = StackFixture(Path(tmp))
+            path = fixture.core / "assets/theme_registry.json"
+            registry = json.loads(path.read_text(encoding="utf-8"))
+            registry["themes"]["v2-mibai"]["variant"] = "hud"
+            path.write_text(json.dumps(registry), encoding="utf-8")
+            findings = self.run_fixture(fixture)
+            self.assertTrue(any(item.code == "theme-variant-family" for item in findings))
+
+    def test_variant_channel_file_missing_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = StackFixture(Path(tmp))
+            (fixture.core / "assets/components/variants/xhs/editorial.css").unlink()
+            findings = self.run_fixture(fixture)
+            self.assertTrue(any(item.code == "variant-channel-missing" for item in findings))
+
+    def test_orphan_variant_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = StackFixture(Path(tmp))
+            (fixture.core / "assets/components/variants/web/rogue.css").write_text(
+                ":root{}", encoding="utf-8")
+            findings = self.run_fixture(fixture)
+            self.assertTrue(any(item.code == "variant-orphan" for item in findings))
 
 
 if __name__ == "__main__":

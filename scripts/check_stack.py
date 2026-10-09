@@ -115,6 +115,66 @@ def check_registry(core: Path) -> tuple[list[Finding], set[str]]:
     return findings, actual | set(aliases if isinstance(aliases, dict) else {})
 
 
+THEME_VARIANT_FAMILY = {
+    "v1": {"blueprint"},
+    "v2": {"editorial"},
+    "v3": {"readdy", "readdy-dark"},
+    "v4": {"glass"},
+    "v5": {"hud"},
+    "v6": {"flare"},
+}
+VARIANT_CHANNELS = ("web", "xhs")
+
+
+def check_theme_variant_family(core: Path) -> list[Finding]:
+    """theme→variant 必须同家族，variant 双通道 CSS 都必须存在；无认领的 variant 即孤儿。"""
+    findings: list[Finding] = []
+    path = core / "assets/theme_registry.json"
+    data = read_json(path, findings, "registry-missing")
+    if data is None:
+        return findings
+    themes = data.get("themes")
+    if not isinstance(themes, dict):
+        return findings
+    claimed: set[str] = set()
+    for theme in sorted(themes):
+        meta = themes[theme] if isinstance(themes[theme], dict) else {}
+        variant = meta.get("variant")
+        family = theme.split("-", 1)[0]
+        allowed = THEME_VARIANT_FAMILY.get(family)
+        if allowed is None:
+            findings.append(finding(
+                "error", "theme-family-unknown", path,
+                f"主题 {theme} 的家族 {family} 未注册 variant 映射",
+            ))
+            continue
+        if variant not in allowed:
+            findings.append(finding(
+                "error", "theme-variant-family", path,
+                f"主题 {theme} 的 variant={variant!r} 不属于 {family} 家族（允许：{sorted(allowed)}）",
+            ))
+            continue
+        claimed.add(variant)
+        for channel in VARIANT_CHANNELS:
+            variant_path = core / "assets/components/variants" / channel / f"{variant}.css"
+            if not variant_path.is_file():
+                findings.append(finding(
+                    "error", "variant-channel-missing", variant_path,
+                    f"variant {variant} 缺 {channel} 通道 CSS",
+                ))
+    for channel in VARIANT_CHANNELS:
+        channel_dir = core / "assets/components/variants" / channel
+        if not channel_dir.is_dir():
+            continue
+        for variant_path in sorted(channel_dir.glob("*.css")):
+            if variant_path.stem not in claimed:
+                findings.append(finding(
+                    "error", "variant-orphan", variant_path,
+                    f"{channel} 通道存在无主题认领的 variant：{variant_path.stem}",
+                ))
+    return findings
+
+
 def check_phantom_ids(roots: Iterable[Path]) -> list[Finding]:
     findings: list[Finding] = []
     for root in roots:
@@ -362,6 +422,7 @@ def check_stack(
     isolated_install: bool = False,
 ) -> list[Finding]:
     findings, valid = check_registry(core)
+    findings.extend(check_theme_variant_family(core))
     roots = (core, content, xhs, research)
     findings.extend(check_phantom_ids(roots))
     if valid:
@@ -391,7 +452,7 @@ def parse_args() -> argparse.Namespace:
         "HEKOUWANG_XHS_SKILL_DIR", ".claude/skills/hekouwang-xhs-theme-skill"))
     parser.add_argument("--research", type=Path, default=default_path(
         "HEKOUWANG_RESEARCH_SKILL_DIR",
-        "Dashboard/Github/hekouwang-content-growth-engine-agent/.agents/skills/hekouwang-ep-research-skill"))
+        "Dashboard/Github/hekouwang-content-growth-engine-harness/.agents/skills/hekouwang-ep-research-skill"))
     parser.add_argument("--isolated-install", action="store_true")
     parser.add_argument("--json", action="store_true")
     return parser.parse_args()
