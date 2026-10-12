@@ -35,7 +35,7 @@ Content Master 可以决定文章网页的视觉叙事与主题表达，但不�
 
 ## 第三层：Visual Core
 
-唯一主人：`hekouwang-visual-core`。
+唯一主人：`hekouwang-visual-core-skill`（共享视觉运行时仓；维护 Agent Skill 仍为 `hekouwang-visual-dev-skill`）。
 
 负责：
 

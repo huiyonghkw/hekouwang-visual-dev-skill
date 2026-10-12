@@ -1,5 +1,10 @@
 # Changelog
 
+## 未发布 · 2026-10-12 · Visual Core 源码仓更名
+
+- 共享视觉运行时源码仓由 `hekouwang-visual-core` 更名为 `hekouwang-visual-core-skill`，默认源码路径同步更新。
+- 本维护 Skill 继续使用 `hekouwang-visual-dev-skill`，其 Skill 名称、发现入口、检查器环境变量和职责均不改变。
+
 ## 未发布 · 2026-09-10 · 退役 V7/V8，矩阵收为 V1–V6
 
 - `EXPECTED_THEMES` 与 Visual Core 1.0.6 对齐为 V1–V6 × 黑白共 12 主题。

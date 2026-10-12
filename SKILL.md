@@ -12,7 +12,7 @@ allowed-tools:
 
 # 禾口王视觉内核开发
 
-维护 `hekouwang-visual-core` 及其消费端适配器，让共享资源只有一个真源，同时保留 Content Master 与各渠道 Design Skill 的表达决策权。
+维护 `hekouwang-visual-core-skill` 及其消费端适配器，让共享资源只有一个真源，同时保留 Content Master 与各渠道 Design Skill 的表达决策权。当前 Skill 自身仍名为 `hekouwang-visual-dev-skill`：前者是共享视觉运行时仓，后者是维护与跨仓检查入口。
 
 ## 所有权边界
 

@@ -445,7 +445,7 @@ def default_path(env_name: str, relative: str) -> Path:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=default_path(
-        "HEKOUWANG_VISUAL_CORE_REPO", "Dashboard/Github/hekouwang-visual-core"))
+        "HEKOUWANG_VISUAL_CORE_REPO", "Dashboard/Github/hekouwang-visual-core-skill"))
     parser.add_argument("--content", type=Path, default=default_path(
         "HEKOUWANG_CONTENT_SKILL_DIR", ".claude/skills/hekouwang-content-master-skill"))
     parser.add_argument("--xhs", type=Path, default=default_path(

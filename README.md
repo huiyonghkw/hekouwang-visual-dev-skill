@@ -24,11 +24,13 @@ EP Research ──锁定事实/数据关系──▶ Content Master ──母版
                                   │ 文章网页决策           │ 视觉计划 / 构图 / QA
                                   └────────┬───────────────┘
                                            ▼
-                               hekouwang-visual-core
+                            hekouwang-visual-core-skill
                          注册表 / Token / 字体 / 完整背景 / 基础组件 / 运行时
 
 hekouwang-visual-dev-skill：维护上面这套边界并执行跨仓回归
 ```
+
+两个名称的职责保持独立：`hekouwang-visual-core-skill` 是共享视觉运行时源码仓，虽然仓名带 `-skill`，仍不含 `SKILL.md`；`hekouwang-visual-dev-skill` 才是 Agent 可发现的维护 Skill，提供本仓的规则、检查器和发布门禁。
 
 渠道只继承本期适用的语义、主题和材质边界，按宿主重新构图；`visual-plan.json` 是 XHS 图组的独立计划，不是公众号或头条的默认产物。
 
@@ -67,14 +69,14 @@ bash scripts/install-hooks.sh
 Visual Core 的源码仓与运行时安装目录分离：
 
 ```text
-源码仓：~/Dashboard/Github/hekouwang-visual-core
+源码仓：~/Dashboard/Github/hekouwang-visual-core-skill
 运行时：~/.hekouwang/visual-core
 ```
 
 推荐显式设置：
 
 ```bash
-export HEKOUWANG_VISUAL_CORE_REPO="$HOME/Dashboard/Github/hekouwang-visual-core"
+export HEKOUWANG_VISUAL_CORE_REPO="$HOME/Dashboard/Github/hekouwang-visual-core-skill"
 export HEKOUWANG_VISUAL_CORE_DIR="$HOME/.hekouwang/visual-core"
 ```
 
