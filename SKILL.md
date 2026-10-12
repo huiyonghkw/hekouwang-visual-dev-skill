@@ -25,6 +25,8 @@ allowed-tools:
 
 Visual Core 不决定某期说什么，也不决定某页如何构图。只有被两个以上通道稳定复用、且不含 EP 内容判断的能力，才进入 Core。
 
+共享视觉能力只统一品牌、Token、字体和工艺；每期叙事、组件和空间构图由内容与渠道层独立设计。边界见 [每期设计自主权](../hekouwang-content-master-skill/references/design-freedom-contract.md)。
+
 ## 维护流程
 
 1. 读取 [references/architecture.md](references/architecture.md)，先判断改动属于 Core、Content Master 还是渠道层；需要追溯覆盖时再读 [references/version-history-and-coverage.md](references/version-history-and-coverage.md)。
