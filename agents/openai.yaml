@@ -1,6 +1,6 @@
 interface:
   display_name: "禾口王视觉内核开发"
   short_description: "维护禾口王视觉内核、设计令牌、主题注册表与跨渠道回归门"
-  default_prompt: "Use $hekouwang-visual-dev-skill to review and safely update the Hekouwang visual core."
+  default_prompt: "$hekouwang-visual-dev-skill：检查或维护正式主题的 Token、字体、完整背景与共享运行时，并核对 Content Master 当期实验选型和 XHS 视觉计划的所有权边界。"
 policy:
   allow_implicit_invocation: true

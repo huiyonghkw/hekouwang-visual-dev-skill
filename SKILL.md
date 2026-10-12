@@ -1,6 +1,6 @@
 ---
 name: hekouwang-visual-dev-skill
-description: 维护会勇禾口王共享视觉内核及其跨 Skill 契约。当用户要求新增或调整 V1–V6 主题、设计 Token、字体合同、通道组件、fit/shoot 运行时，或检查 Visual Core、Content Master、XHS Theme 之间的所有权与注册表漂移时使用。不用于制作某一期 EP、撰写内容或直接生成渠道图片。
+description: 维护会勇禾口王 Visual Core 的正式主题注册表、设计 Token、字体合同、完整画布背景、基础组件与 fit/shoot 运行时，并检查跨 Skill 所有权和注册表漂移。当用户要求调整共享视觉能力或核对 Visual Core、Content Master 与渠道 Skill 的契约时使用。五类实验台和当期选型归 Content Master，XHS 的 visual-plan.json 归 XHS Theme；本 Skill 不制作单期 EP、文章或渠道图片。
 allowed-tools:
   - Bash
   - Read
@@ -19,9 +19,9 @@ allowed-tools:
 | 层 | 唯一职责 |
 |---|---|
 | EP Research | 事实、证据、数据口径、判断边界与风险 |
-| Content Master | 叙事、文案、来源与合规表达、文章母版网页、`content-contract.json` |
-| Visual Core | 主题注册表、Token、字体合同、可复用基础组件、`fit` / `shoot` 运行时 |
-| Channel Design | 渠道视觉计划、构图实现、平台适配与视觉验收；XHS 拥有 `visual-plan.json` |
+| Content Master | 叙事、文案、来源与合规表达、文章母版网页、五类实验台的当期选型记录、`content-contract.json` |
+| Visual Core | 正式主题注册表、Token、字体合同、完整画布背景、可复用基础组件、`fit` / `shoot` 运行时 |
+| Channel Design | 消费已确认母版、内容合同与适用的实验选型，负责宿主构图、平台适配与视觉验收；XHS 单独拥有 `visual-plan.json` |
 
 Visual Core 不决定某期说什么，也不决定某页如何构图。只有被两个以上通道稳定复用、且不含 EP 内容判断的能力，才进入 Core。
 

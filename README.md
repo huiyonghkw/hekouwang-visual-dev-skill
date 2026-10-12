@@ -1,8 +1,8 @@
 # hekouwang-visual-dev-skill
 
-维护会勇禾口王共享视觉内核的 Agent Skill。
+维护会勇禾口王正式共享视觉内核与跨 Skill 契约的 Agent Skill。
 
-它负责判断视觉能力应该落在哪一层，并对 `hekouwang-visual-core`、`hekouwang-content-master-skill`、`hekouwang-xhs-theme-skill` 和 EP Research 的交接契约做跨仓回归。它不是主题资源仓，也不直接制作某一期 EP。
+它负责判断视觉能力应该落在哪一层，维护 Visual Core 的主题注册表、Token、字体合同、完整画布背景及共享运行时，并对 `hekouwang-content-master-skill`、`hekouwang-xhs-theme-skill` 和 EP Research 的交接契约做跨仓回归。Content Master 负责五类实验台及当期 `实验选型/选型结果.json`，并把采用方案落到文章母版；XHS Theme 负责自己的 `visual-plan.json` 与竖图构图。Visual Dev 不替任一层制作某期 EP，也不把实验选型直接注册成新主题。
 
 ## 为什么需要它
 
@@ -19,16 +19,18 @@
 ## 仓库关系
 
 ```text
-EP Research ──锁定事实──▶ Content Master ──内容合同──▶ Channel Design
+EP Research ──锁定事实/数据关系──▶ Content Master ──母版/内容合同/实验选型──▶ Channel Design
                                   │                        │
                                   │ 文章网页决策           │ 视觉计划 / 构图 / QA
                                   └────────┬───────────────┘
                                            ▼
                                hekouwang-visual-core
-                         注册表 / Token / 字体 / 基础组件 / 运行时
+                         注册表 / Token / 字体 / 完整背景 / 基础组件 / 运行时
 
 hekouwang-visual-dev-skill：维护上面这套边界并执行跨仓回归
 ```
+
+渠道只继承本期适用的语义、主题和材质边界，按宿主重新构图；`visual-plan.json` 是 XHS 图组的独立计划，不是公众号或头条的默认产物。
 
 四层职责的完整定义见 [`references/architecture.md`](references/architecture.md)；版本演进与 reference 覆盖见 [`references/version-history-and-coverage.md`](references/version-history-and-coverage.md)。
 
@@ -37,7 +39,7 @@ hekouwang-visual-dev-skill：维护上面这套边界并执行跨仓回归
 - 新增或修改 V1–V6 主题及黑白两极；
 - 调整共享 Token、字体合同、基础组件、`fit.js` 或 `shoot.js`；
 - 把 Content Master / XHS Theme 中的重复视觉资产迁移到 Core；
-- 检查 `content-contract.json` 与 `visual-plan.json` 是否重新混在一起；
+- 检查 Content Master 的内容合同、当期实验选型记录与 XHS 的 `visual-plan.json` 是否越过各自所有权；
 - 检查文档、脚本和合同引用的主题 ID 是否真实存在；
 - 发布 Visual Core 或相关 Skill 前做跨仓回归。
 
@@ -96,7 +98,7 @@ python3 scripts/check_stack.py \
 1. Visual Core 注册表必须是 12 个规范主题，默认主题和旧别名都能解析；
 2. Content Master / XHS Theme 不得继续保存主题、字体、注册表与截图运行时副本；
 3. EP Research、Content Master、Visual Core、Channel Design 的所有权声明不能互相覆盖；
-4. `content-contract.json` 不含主题与构图决策，`visual-plan.json` 才拥有 `theme`；
+4. `content-contract.json` 不含主题与构图决策，XHS 的 `visual-plan.json` 才拥有图组 `theme`；
 5. `*-xhs-spec`、`*-visual-spec` 等虚构 ID 必须失败；
 6. Core 必须能安装到临时目录，并被两个消费端通过环境变量加载。
 
