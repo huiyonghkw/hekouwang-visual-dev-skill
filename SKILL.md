@@ -29,7 +29,7 @@ Visual Core 不决定某期说什么，也不决定某页如何构图。只有�
 
 1. 读取 [references/architecture.md](references/architecture.md)，先判断改动属于 Core、Content Master 还是渠道层；需要追溯覆盖时再读 [references/version-history-and-coverage.md](references/version-history-and-coverage.md)。
 2. 检查相关仓库 `git status`；保留用户和并行 Agent 的修改，不重置或覆盖。
-3. 修改注册表时只使用其中真实存在的规范 ID；“视觉规范”“图组规范”是调用模式，不另造 `*-spec` ID。
+3. 已确认文章的材质 / 响应式升级按架构文档归 Content Master；单期排版确认不自动升级 Core Token 或安装版本。修改注册表时只使用其中真实存在的规范 ID；“视觉规范”“图组规范”是调用模式，不另造 `*-spec` ID。
 4. Core 源码改完先在隔离前缀安装，再让 Content Master 与 XHS 适配器通过 `HEKOUWANG_VISUAL_CORE_DIR` 冒烟导入。
 5. 运行 `python3 scripts/check_stack.py`，检查隔离安装、所有权、重复资产、合同拆分和注册表引用。
 6. 任何 Skill 被创建或修改，都分别运行用户的 `hekouwang-claude-skill-doctor-skill/check.py`；Core 本身不是 Skill，使用自身单测与验证器。
