@@ -165,6 +165,20 @@ class CheckStackTest(unittest.TestCase):
                 handle.write("\n示例：theme='v*-*'\n")
             self.assertEqual(self.run_fixture(fixture), [])
 
+    def test_dependency_dirs_are_not_scanned(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = StackFixture(Path(tmp))
+            vendored = fixture.content / ".venv/lib/site-packages/rich/tree.py"
+            vendored.parent.mkdir(parents=True)
+            vendored.write_text("theme='monokai'\n", encoding="utf-8")
+            self.assertEqual(self.run_fixture(fixture), [])
+
+            owned = fixture.content / "scripts/tree.py"
+            owned.parent.mkdir(parents=True)
+            owned.write_text("theme='monokai'\n", encoding="utf-8")
+            findings = self.run_fixture(fixture)
+            self.assertTrue(any(item.code == "unknown-theme-reference" for item in findings))
+
     def test_theme_variant_family_mismatch_fails(self):
         with tempfile.TemporaryDirectory() as tmp:
             fixture = StackFixture(Path(tmp))

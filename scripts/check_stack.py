@@ -63,7 +63,7 @@ def text_files(root: Path) -> Iterable[Path]:
     for path in root.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
             continue
-        if any(part in {".git", "node_modules", "__pycache__", "output"} for part in path.parts):
+        if any(part in {".git", "node_modules", ".venv", "__pycache__", "output"} for part in path.parts):
             continue
         yield path
 
