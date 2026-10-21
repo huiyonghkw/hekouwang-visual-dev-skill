@@ -20,7 +20,7 @@ allowed-tools:
 |---|---|
 | EP Research | 事实、证据、数据口径、判断边界与风险 |
 | Content Master | 叙事、文案、来源与合规表达、文章母版网页、五类实验台的当期选型记录、`content-contract.json` |
-| Visual Core | 正式主题注册表、Token、字体合同、完整画布背景、可复用基础组件、`fit` / `shoot` 运行时 |
+| Visual Core | 正式主题注册表、Token、字体合同、完整画布背景、可复用基础组件、`fit` / `shoot` 运行时、渠道共用出图 `shoot_cards`（含序号与方图安全区检查） |
 | Channel Design | 消费已确认母版、内容合同与适用的实验选型，负责宿主构图、平台适配与视觉验收；XHS 单独拥有 `visual-plan.json` |
 
 Visual Core 不决定某期说什么，也不决定某页如何构图。只有被两个以上通道稳定复用、且不含 EP 内容判断的能力，才进入 Core。

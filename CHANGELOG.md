@@ -1,5 +1,9 @@
 # Changelog
 
+## 未发布 · 2026-10-21 · 渠道共用出图
+
+- 架构文档与职责表记录 Visual Core 1.0.12 新增的 `shoot_cards.js` / `figure_guard.js`：截图前拦序号与内部编号，`--safe-square` 检查公众号首图方形安全区，公众号与头条共用。
+
 ## 未发布 · 2026-10-17 · 跨仓扫描跳过 `.venv`
 
 - `check_stack.py` 的文本扫描在 `node_modules` 之外也跳过 `.venv`，避免把第三方包里的 `theme='monokai'` 误报为未注册主题；新增依赖目录不扫描、自有目录仍报错的正反例。
